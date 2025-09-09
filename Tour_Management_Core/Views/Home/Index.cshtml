@@ -1,4 +1,4 @@
-@model List<Tour>
+@model List<Tour_Management_Core.Models.Tour>
 
 <!DOCTYPE html>
 <html>
@@ -10,7 +10,7 @@
     <ul>
         @foreach(var tour in Model)
         {
-            <li>@tour.Name - @tour.Description</li>
+            <li>@tour.Name - @tour.Description - @tour.Location - $@tour.Price</li>
         }
     </ul>
 </body>
