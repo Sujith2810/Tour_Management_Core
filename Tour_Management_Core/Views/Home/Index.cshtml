@@ -1,0 +1,17 @@
+@model List<Tour>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tour Management</title>
+</head>
+<body>
+    <h1>Tours</h1>
+    <ul>
+        @foreach(var tour in Model)
+        {
+            <li>@tour.Name - @tour.Description</li>
+        }
+    </ul>
+</body>
+</html>

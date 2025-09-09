@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tour-management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tour-management
+  template:
+    metadata:
+      labels:
+        app: tour-management
+    spec:
+      containers:
+      - name: tour-management
+        image: 010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project:latest
+        ports:
+        - containerPort: 80
