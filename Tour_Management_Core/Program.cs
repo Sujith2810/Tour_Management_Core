@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Tour_Management_Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TourDbContext>(options =>
-    options.UseInMemoryDatabase("TourDB"));
+    options.UseInMemoryDatabase("TourDB")); // In-memory DB for demo
 
 var app = builder.Build();
 
@@ -23,17 +24,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
-// DbContext scaffold
-public class TourDbContext : DbContext
-{
-    public TourDbContext(DbContextOptions<TourDbContext> options) : base(options) { }
-    public DbSet<Tour> Tours { get; set; }
-}
-
-public class Tour
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-}
