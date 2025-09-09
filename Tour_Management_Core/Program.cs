@@ -4,8 +4,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllersWithViews();
-
-// Use in-memory database (no SQL Server required)
 builder.Services.AddDbContext<TourDbContext>(options =>
     options.UseInMemoryDatabase("TourDB"));
 
@@ -20,26 +18,22 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
 
-// Default route
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 
-// DbContext
+// DbContext scaffold
 public class TourDbContext : DbContext
 {
-    public TourDbContext(DbContextOptions<TourDbContext> options)
-        : base(options) { }
-
-    public DbSet<Tour> Tours => Set<Tour>();
+    public TourDbContext(DbContextOptions<TourDbContext> options) : base(options) { }
+    public DbSet<Tour> Tours { get; set; }
 }
 
-// Model
 public class Tour
 {
     public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Description { get; set; } = "";
+    public string Name { get; set; }
+    public string Description { get; set; }
 }
