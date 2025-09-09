@@ -2,11 +2,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore
+# Copy csproj and restore dependencies
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copy everything else and build
+# Copy the rest of the code and publish
 COPY . ./
 RUN dotnet publish -c Release -o /app/publish
 
@@ -14,5 +14,9 @@ RUN dotnet publish -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+
+# Expose HTTP port
 EXPOSE 80
+
+# Start the app
 ENTRYPOINT ["dotnet", "Tour_Management_Core.dll"]
