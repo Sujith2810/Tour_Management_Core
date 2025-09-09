@@ -1,22 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using Tour_Management_Core.Models;
+using System.Linq;
 
-public class HomeController : Controller
+namespace Tour_Management_Core.Controllers
 {
-    private readonly TourDbContext _context;
-
-    public HomeController(TourDbContext context)
+    public class HomeController : Controller
     {
-        _context = context;
-        if (!_context.Tours.Any())
+        private readonly TourDbContext _context;
+
+        public HomeController(TourDbContext context)
         {
-            _context.Tours.Add(new Tour { Name = "Sample Tour", Description = "Test tour" });
-            _context.SaveChanges();
-        }
-    }
+            _context = context;
 
-    public IActionResult Index()
-    {
-        var tours = _context.Tours.ToList();
-        return View(tours);
+            // Seed data if no tours exist
+            if (!_context.Tours.Any())
+            {
+                _context.Tours.Add(new Tour
+                {
+                    Name = "Sample Tour",
+                    Description = "Test tour",
+                    Location = "Unknown",
+                    Price = 100
+                });
+                _context.SaveChanges();
+            }
+        }
+
+        public IActionResult Index()
+        {
+            var tours = _context.Tours.ToList();
+            return View(tours);
+        }
     }
 }
