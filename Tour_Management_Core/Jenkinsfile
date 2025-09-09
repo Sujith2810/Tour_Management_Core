@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCOUNT_ID = "010426082127"
-        AWS_REGION = "us-east-1"
+        AWS_ACCOUNT_ID = '010426082127'
+        AWS_REGION = 'us-east-1'
         ECR_REPO = "010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project"
     }
 
@@ -14,36 +14,51 @@ pipeline {
             }
         }
 
-        stage('Login to ECR') {
+         stage('Login to ECR') {
             steps {
-                sh '''
-                aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 010426082127.dkr.ecr.us-east-1.amazonaws.com
-                '''
+                script {
+                    sh """
+                        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 010426082127.dkr.ecr.us-east-1.amazonaws.com
+                    """
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t dotnet-project .'
+                script {
+                    docker.build("dotnet-project", "-f Tour_Management_Core/Dockerfile .")
+                }
             }
         }
 
-        stage('Tag & Push Image') {
+        stage('Push to ECR') {
             steps {
-                sh '''
-                docker tag dotnet-project:latest 010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project:latest
-                docker push 010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project:latest
-                '''
+                script {
+                    sh "docker tag dotnet-project:latest 010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project:latest"
+                    sh "docker push 010426082127.dkr.ecr.us-east-1.amazonaws.com/dotnet-project:latest"
+                }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                kubectl apply -f k8s/deployment.yaml
-                kubectl apply -f k8s/service.yaml
-                '''
+                script {
+                    sh """
+                        kubectl apply -f Tour_Management_Core/k8s/deployment.yaml
+                        kubectl apply -f Tour_Management_Core/k8s/service.yaml
+                    """
+                }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
